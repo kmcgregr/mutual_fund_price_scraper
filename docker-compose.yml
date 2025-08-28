@@ -1,0 +1,9 @@
+version: '3'
+services:
+  stock_web_scrapper:
+    image: localhost:5000/docker_mutual_fund_v1
+    restart: unless-stopped
+    volumes:
+      - ./mutual_fund_scraper:/usr/src/app
+    command: "python mutual_fund_price_scrapper.py"
+    tty: true
