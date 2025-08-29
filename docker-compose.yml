@@ -1,9 +1,9 @@
-version: '3'
+version: "3.9"
+
 services:
-  stock_web_scrapper:
-    image: localhost:5000/docker_mutual_fund_v1
-    restart: unless-stopped
+  mutual-fund-scraper:
+    build: .
+    container_name: mutual_fund_scraper
     volumes:
-      - ./mutual_fund_scraper:/usr/src/app
-    command: "python mutual_fund_price_scrapper.py"
-    tty: true
+      - ./output:/app   # bind local "output" folder to container /app for results
+    restart: unless-stopped

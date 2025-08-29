@@ -1,14 +1,18 @@
-FROM python:3
-RUN python -m pip install --upgrade pip
-RUN pip install requests
-RUN pip install pandas
-RUN pip install numpy
-RUN pip install openpyxl
-RUN pip install schedule
-RUN pip install beautifulsoup4
+# Use an official Python base image
+FROM python:3.11-slim
 
-WORKDIR /usr/src/app
+# Set working directory
+WORKDIR /app
 
-COPY . /usr/src/app
+# Copy requirements directly into container
+COPY requirements.txt .
 
-CMD ["python", "/usr/src/app/mutual_fund_price_scrapper.py"]
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application files
+COPY mutual_fund_price_scrapper.py .
+COPY my_mutual_funds.csv .
+
+# Default command to run the scraper
+CMD ["python", "mutual_fund_price_scrapper.py"]
