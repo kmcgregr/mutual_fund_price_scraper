@@ -9,11 +9,11 @@ import time
 
 from bs4 import BeautifulSoup
 
-def read_stock_file():
+def read_mutual_fund_file():
     with open('my_mutual_funds.csv', 'r') as stock_data_file:
         return stock_data_file.readlines()
  
-def get_fund_price(url):
+def get_mutual_fund_price(url):
     headers = {
         "User-Agent": "Mozilla/5.0 (compatible; FundPriceBot/1.0; +http://yourwebsite.com/bot)"
     }
@@ -28,10 +28,10 @@ def get_fund_price(url):
     else:
         raise ValueError("Could not find the price element on the page.")
      
-def get_stock_price():
+def write_mutual_fund_price():
     list_of_stock_stickers =[]
     list_of_stock_prices = []
-    stock_tickers = read_stock_file()
+    stock_tickers = read_mutual_fund_file()
     for stock in stock_tickers:
         try:
             print("Stock",stock)
@@ -39,7 +39,7 @@ def get_stock_price():
             url = "https://www.theglobeandmail.com/investing/markets/funds/%s/"%(stock.strip())
             print (url)
                      
-            price = get_fund_price(url)
+            price = get_mutual_fund_price(url)
             if price:
                 print("Stock :",stock," stock price: ", price)
                 list_of_stock_stickers.append(stock.strip())
@@ -53,15 +53,17 @@ def get_stock_price():
     print(list_of_stock_stickers)
     data_t = {'stock': list_of_stock_stickers,'price': list_of_stock_prices}
     df = pd.DataFrame.from_dict(data_t)
-    df.to_excel("stock_prices.xlsx")
+    df.to_excel("mutual_prices.xlsx")
 
-schedule.every(10).minutes.do(get_stock_price)
-schedule.every().day.at("17:00").do(get_stock_price)
-schedule.every().monday.do(get_stock_price)
-print("I am scheduling the web scrapper")
+# Schedule job every 10 minutes
+schedule.every(10).minutes.do(write_mutual_fund_price)
+
+print("Scheduler started... running every 10 minutes.")
 while True:
-  schedule.run_pending()
-  time.sleep(1)
+    schedule.run_pending()
+    time.sleep(60)
+
+
 
 
  
